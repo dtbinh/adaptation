@@ -32,7 +32,7 @@ public class EnsembleManager {
 	}
 	
 	public void destroyEnsemble(String id) {
-		//ensembles.remove(id);
+		ensembles.remove(id);
 		//System.out.println("Destroyed ensemble \"" + id + "\"");
 	}
 }

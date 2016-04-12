@@ -619,21 +619,15 @@ public class EvoKnowledge {
 		if (ex.size() == 0) {
 			return;
 		}
-		
-		//System.out.println("Estimated itinerary: " + it.startTime + " " + it.endTime + " " + it.duration + " " + it.waitingTime);
-
 		it.waitingTime = 0;
-
 		int exIndex = 0;
 		long legStartTime = 0;
 		long legEndTime = 0;
 		boolean first = true;
 	
 		for (Leg l : it.legs) {
-			//System.out.println("  Estimation: " + l.mode + " " + l.startTime + " " + l.endTime + " " + ((l.endTime - l.startTime) / 1000) + " " + l.segments.size());
 			
 			if (first || l.mode == TType.BUS || l.mode == TType.CABLE_CAR) {
-				//waitingTime += (Long.parseLong(l.startTime) - legEndTime);
 				legStartTime = l.startTime;
 				legEndTime = legStartTime;
 
@@ -659,7 +653,6 @@ public class EvoKnowledge {
 				}
 				double duration = e.getTravelTime() * 1000;
 				it.maxFillingLevel = Math.max(e.getPublicTransportationFillingLevel(), it.maxFillingLevel);
-				//System.out.println("    " + l.mode + " " + duration);
 				legEndTime += duration;
 				added++;
 			}
@@ -671,7 +664,6 @@ public class EvoKnowledge {
 			first = false;
 			l.startTime = legStartTime;
 			l.endTime = legEndTime;
-			// System.out.println("  Prediction: " + l.mode + " " + legStartTime + " " + legEndTime + " " + ((legEndTime - legStartTime) / 1000) + " " + added);
 		}
 		
 		// Update itinerary time.
@@ -688,10 +680,6 @@ public class EvoKnowledge {
 			it.waitingTime += ((it.legs.get(i + 1).startTime - it.legs.get(i).endTime) / 1000);
 		}
 		it.duration += (it.waitingTime / 1000);
-		//System.out.println("Predicted itinerary: " + it.startTime + " " + it.endTime + " " + it.duration + " " + it.waitingTime);
-
-		//it.waitingTime = waitingTime;
-		//System.out.println();
 	}
 	
 	public boolean exchangeKnowledge(Entity other) {
