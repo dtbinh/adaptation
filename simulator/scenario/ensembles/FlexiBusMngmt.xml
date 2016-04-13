@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:ensemble name="FlexiBusMngmt" xmlns:tns="http://das.fbk.eu/Ensemble" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://das.fbk.eu/Ensemble Ensemble.xsd ">
+  <!--  ROUTE MANAGER RMA -->
+ <tns:role id="RouteManagement_1" type="RouteManagement_1">
+    <tns:domainObjectType>tns:domainObjectType</tns:domainObjectType>
+    
+    <!--Forward the Issue to Assign Passengers of RouteA to another Route of the FBC-->
+    <tns:solver name="ManagePassengers" selected="true">
+      <tns:issue>
+        <tns:issueType>AddPassengersRouteA</tns:issueType>
+        <tns:issueCondition></tns:issueCondition>
+      </tns:issue>
+      <tns:solverCondition></tns:solverCondition>
+      <tns:solution name="SOL1">
+        <tns:internalSolution>internalSolution</tns:internalSolution>
+        <tns:issue>
+        <!--  communicate to the RM of A to allocate Passengers of ROute B in A -->
+        <tns:issueType>AllocatePassengersRouteA</tns:issueType>
+        <tns:issueCondition>Exist</tns:issueCondition>
+      </tns:issue>
+      </tns:solution>
+    </tns:solver>
+  </tns:role>
+  
+  
+  <!--  ROUTE MANAGER RMB -->
+ <tns:role id="RouteManagement_2" type="RouteManagement_2">
+    <tns:domainObjectType>tns:domainObjectType</tns:domainObjectType>
+    
+    <!--Manage the assignment of new passengers from another route (RouteA)-->
+    <tns:solver name="AddPassengers" selected="true">
+      <tns:issue>
+        <tns:issueType>AddPassengersRouteB</tns:issueType>
+        <tns:issueCondition></tns:issueCondition>
+      </tns:issue>
+      <tns:solverCondition></tns:solverCondition>
+      <tns:solution name="SOL1">
+        <tns:internalSolution>internalSolution</tns:internalSolution>
+        <tns:issue>
+        <!--  communicate to the Driver the new passengers -->
+        <tns:issueType>ChangeNumOfPassengers</tns:issueType>
+        <tns:issueCondition>Exist</tns:issueCondition>
+      </tns:issue>
+      </tns:solution>
+    </tns:solver>
+  </tns:role>
+    
+   <!--  Flexi Bus Company -->
+  <tns:role id="FBC1" type="FBC">
+    <tns:domainObjectType>tns:domainObjectType</tns:domainObjectType>
+    
+    <!--Allocate Passengers of B To ROUTE A-->
+    <tns:solver name="AllocatePassenger" selected="true">
+      <tns:issue>
+        <tns:issueType>AssignPassengerOfB</tns:issueType>
+        <tns:issueCondition></tns:issueCondition>
+      </tns:issue>
+      <tns:solverCondition></tns:solverCondition>
+      <tns:solution name="SOL">
+        <tns:internalSolution>internalSolution</tns:internalSolution>
+        <tns:issue>
+        <!--  communicate to the RouteA To add Passengers -->
+        <tns:issueType>AddPassengersRouteA</tns:issueType>
+        <tns:issueCondition>Exist</tns:issueCondition>
+      </tns:issue>
+     </tns:solution>
+     </tns:solver>
+ 
+    </tns:role>
+    
+  
+    
+   
+  <tns:variable>NMTOKEN</tns:variable>
+</tns:ensemble>
