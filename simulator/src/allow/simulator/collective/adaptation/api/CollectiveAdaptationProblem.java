@@ -36,8 +36,8 @@ public class CollectiveAdaptationProblem {
 	Issue = issue;
     }
 
-    public CollectiveAdaptationProblem(String capID,
-	    List<CollectiveAdaptationEnsemble> ensembles, String issue,
+    // with multiple ensembles
+    public CollectiveAdaptationProblem(String capID, List<CollectiveAdaptationEnsemble> ensembles, String issue,
 	    String startingRole, String ensemble, String target) {
 	super();
 	this.capID = capID;

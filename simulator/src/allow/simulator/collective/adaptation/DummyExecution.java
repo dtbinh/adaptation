@@ -8,7 +8,7 @@ public class DummyExecution implements CollectiveAdaptationCommandExecution {
     @Override
     public void applyCommand(String ensemble, RoleCommand command) {
 	// TODO Auto-generated method stub
-	System.out.println(command);
+	System.out.println("COMMAND: " + command);
 
     }
 
