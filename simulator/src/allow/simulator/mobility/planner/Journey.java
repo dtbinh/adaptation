@@ -9,8 +9,7 @@ import allow.simulator.util.Coordinate;
  * @author Andreas Poxrucker (DFKI)
  *
  */
-public class Journey {
-
+public final class Journey {
 	// Starting position.
 	private Coordinate start;
 	

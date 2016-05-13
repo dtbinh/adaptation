@@ -7,11 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import allow.simulator.entity.Person;
-import allow.simulator.entity.TransportAgency;
+import allow.simulator.entity.PublicTransportationAgency;
 import allow.simulator.flow.activity.Activity;
 import allow.simulator.flow.activity.Learn;
+import allow.simulator.mobility.data.PublicTransportationStop;
 import allow.simulator.mobility.data.Route;
-import allow.simulator.mobility.data.Stop;
 import allow.simulator.mobility.data.Trip;
 import allow.simulator.mobility.planner.Itinerary;
 import allow.simulator.mobility.planner.Leg;
@@ -91,7 +91,7 @@ public final class PrepareJourney extends Activity {
 			case RAIL:
 			case CABLE_CAR:
 			case TRANSIT:
-				TransportAgency ta = person.getContext().getWorld().getUrbanMobilitySystem()
+				PublicTransportationAgency ta = person.getContext().getWorld().getUrbanMobilitySystem()
 					.getTransportationRepository().getGTFSTransportAgency(l.agencyId);
 				Route route = ta.getRoute(l.routeId);		
 				if (route == null) throw new IllegalStateException("Error: Transport " + l.routeId + " of " + l.agencyId + " is unknown.");
@@ -100,10 +100,10 @@ public final class PrepareJourney extends Activity {
 				if (trip == null) throw new IllegalStateException("Error: Trip " + l.tripId + " of " + l.agencyId + " is unknown.");
 
 				// Get start and destination stop.
-				Stop in = route.getStop(l.stopIdFrom);
+				PublicTransportationStop in = route.getStop(l.stopIdFrom);
 				if (in == null) throw new IllegalStateException("Error: Stop "+ l.stopIdFrom + " of route " + l.routeId + " is unknown.");
 
-				Stop out = route.getStop(l.stopIdTo);
+				PublicTransportationStop out = route.getStop(l.stopIdTo);
 				if (out == null) throw new IllegalStateException("Error: Stop "+ l.stopIdTo + " of route " + l.routeId + " is unknown.");
 				
 				entity.getFlow().addActivity(new UsePublicTransport(person,

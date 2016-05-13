@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import allow.simulator.entity.Entity;
-import allow.simulator.entity.PublicTransportation;
+import allow.simulator.entity.TransportationEntity;
 import allow.simulator.flow.activity.Activity;
 import allow.simulator.flow.activity.person.UsePublicTransport;
 
@@ -37,7 +37,7 @@ public class BusRelation extends Relation {
 		if (a.getType() == Activity.Type.USE_PUBLIC_TRANSPORT) {
 			// If entity is using public transportation, add bus and passengers as
 			// possible exchange candidates.
-			PublicTransportation b = ((UsePublicTransport) a).getMeansOfTransportation();
+			TransportationEntity b = ((UsePublicTransport) a).getMeansOfTransportation();
 			
 			if ((b != null) && (b.getId() != entity.getId())) {
 				busEntities.add(b);

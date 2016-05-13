@@ -38,6 +38,11 @@ public abstract class Entity extends Observable {
 		BUS,
 		
 		/**
+		 * Taxi entity executing single and shared taxi rides.
+		 */
+		TAXI,
+		
+		/**
 		 * FlexiBus entity executing dynamic trips.
 		 */
 		FLEXIBUS,
@@ -53,14 +58,19 @@ public abstract class Entity extends Observable {
 		PUBLICTRANSPORTAGENCY,
 		
 		/**
+		 * Taxi agency managing a taxis which can be dynamically allocated as required.
+		 */
+		TAXIAGENCY,
+		
+		/**
+		 * Agency for renting a bike.
+		 */
+		BIKE_RENTAL_AGENCY,
+		
+		/**
 		 * FlexiBus agency providing dynamic on-request bus scheduling.
 		 */
 		FLEXIBUSAGENCY,
-		
-		/**
-		 * Car pooling agency providing dynamic on-request ride-sharing.
-		 */
-		CARPOOLINGAGENCY,
 		
 		/**
 		 * The urban mobility system for smart journey planning.

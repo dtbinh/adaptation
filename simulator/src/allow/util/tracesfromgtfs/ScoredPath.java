@@ -7,8 +7,8 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 
 import allow.simulator.util.Coordinate;
-import allow.simulator.util.Pair;
 import allow.simulator.util.Geometry;
+import allow.simulator.util.Pair;
 import allow.simulator.world.StreetMap;
 import allow.simulator.world.StreetNode;
 import allow.simulator.world.StreetSegment;

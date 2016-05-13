@@ -7,7 +7,7 @@ import allow.simulator.entity.Person;
 import allow.simulator.entity.PublicTransportation;
 import allow.simulator.entity.relation.Relation;
 import allow.simulator.flow.activity.Activity;
-import allow.simulator.mobility.data.Stop;
+import allow.simulator.mobility.data.PublicTransportationStop;
 import allow.simulator.mobility.data.TransportationRepository;
 import allow.simulator.mobility.data.Trip;
 
@@ -19,8 +19,8 @@ import allow.simulator.mobility.data.Trip;
  */
 public class UsePublicTransport extends Activity {
 	// The stops to get in and out.
-	private Stop in;
-	private Stop out;
+	private PublicTransportationStop in;
+	private PublicTransportationStop out;
 	private String agencyId;
 	private Trip trip;
 	
@@ -45,7 +45,7 @@ public class UsePublicTransport extends Activity {
 	 * @param departure Time when public transportation departs from stop
 	 *        according to schedule. 
 	 */
-	public UsePublicTransport(Person person, Stop start, Stop dest, String agencyId, Trip trip, LocalTime departure) {
+	public UsePublicTransport(Person person, PublicTransportationStop start, PublicTransportationStop dest, String agencyId, Trip trip, LocalTime departure) {
 		super(Activity.Type.USE_PUBLIC_TRANSPORT, person);
 		earliestStartingTime = departure;
 		reachedStop = false;
@@ -83,26 +83,12 @@ public class UsePublicTransport extends Activity {
 			
 			// Reaching a stop needs zero time.
 			if (b != null && person.getContext().getTime().getCurrentTime().isAfter(earliestStartingTime.plusSeconds(b.getCurrentDelay() + 300))) {
-				/*System.out.println(person + " missed bus on trip " + trip.getTripId() 
-						+ ". Actual departure: " + earliestStartingTime
-						+ ", real departure: " + earliestStartingTime.plusSeconds(b.getCurrentDelay())
-						+ ", arrival: " + person.getContext().getTime().getCurrentTime());*/
-				
-				/* Dirty error handling for missed busses 
-				person.getFlow().clear();
-				person.getKnowledge().clear();
-				person.setPosition(person.getCurrentItinerary().to);*/
 				person.getFlow().clear();
 				person.getFlow().addActivity(new Replan(person));
 				setFinished();
 				return 0.0;
 				
 			} else if (person.getContext().getTime().getCurrentTime().isAfter(earliestStartingTime.plusSeconds(1800))) {
-				/*System.out.println(person + " missed bus on trip " + trip.getTripId() 
-						+ ". Actual departure: " + earliestStartingTime
-						+ ", real departure: " + earliestStartingTime.plusSeconds(b.getCurrentDelay())
-						+ ", arrival: " + person.getContext().getTime().getCurrentTime());*/
-				
 				// Dirty error handling for missed busses
 				person.getFlow().clear();
 				person.getKnowledge().clear();
@@ -117,8 +103,8 @@ public class UsePublicTransport extends Activity {
 			}
 			
 			// If person has not entered the correct means yet, check in stop for waiting vehicles.
-			if (in.hasWaitingVehicle()) {
-				List<PublicTransportation> waiting = in.getWaitingVehicle();
+			if (in.hasWaitingPublicTransportationEntities()) {
+				List<PublicTransportation> waiting = in.getPublicTransportationEntities();
 
 				for (int i = 0; i < waiting.size(); i++) {
 					PublicTransportation transport = waiting.get(i);

@@ -10,7 +10,7 @@ import allow.simulator.entity.PublicTransportation;
 import allow.simulator.entity.knowledge.Experience;
 import allow.simulator.entity.knowledge.StopExperience;
 import allow.simulator.flow.activity.Activity;
-import allow.simulator.mobility.data.Stop;
+import allow.simulator.mobility.data.PublicTransportationStop;
 
 /**
  * Represents an activity for a means of public transportation to approach a
@@ -20,9 +20,8 @@ import allow.simulator.mobility.data.Stop;
  *
  */
 public class PickUpAndWait extends Activity {
-
 	// Stop to approach.
-	private Stop stop;
+	private PublicTransportationStop stop;
 	
 	// Time stop trip departs from this stop.
 	private LocalTime time;
@@ -40,7 +39,7 @@ public class PickUpAndWait extends Activity {
 	 * @param stop Stop to approach.
 	 * @param time Time to depart form the stop.
 	 */
-	public PickUpAndWait(PublicTransportation entity, Stop stop, LocalTime time) {
+	public PickUpAndWait(PublicTransportation entity, PublicTransportationStop stop, LocalTime time) {
 		// Constructor of super class.
 		super(Activity.Type.PICKUP_AND_WAIT, entity);
 		
@@ -55,7 +54,7 @@ public class PickUpAndWait extends Activity {
 
 	@Override
 	public double execute(double deltaT) {	
-		// Transportation entity.
+		// Bus entity
 		PublicTransportation p = (PublicTransportation) entity;
 		
 		// Register relations update.
@@ -67,7 +66,7 @@ public class PickUpAndWait extends Activity {
 			tStart = entity.getContext().getTime().getTimestamp();
 			p.setCurrentStop(stop);
 			p.setPosition(stop.getPosition());
-			stop.addWaitingVehicle(p);
+			stop.addPublicTransportation(p);
 			approached = true;
 			return deltaT;
 		}
@@ -77,7 +76,7 @@ public class PickUpAndWait extends Activity {
 					
 		if ((currentTime.getDays() > day || currentTime.getCurrentTime().isAfter(time))) {
 			// Remove transportation from current stop.
-			stop.removeWaitingVehicle(p);
+			stop.removePublicTransportation(p);
 			p.setCurrentStop(null);
 			
 			Experience newEx = new StopExperience(stop,

@@ -9,8 +9,8 @@ import allow.simulator.ensemble.EnsembleManager;
 import allow.simulator.entity.PublicTransportation;
 import allow.simulator.flow.activity.Activity;
 import allow.simulator.flow.activity.Learn;
-import allow.simulator.mobility.data.Stop;
-import allow.simulator.mobility.data.Trip;
+import allow.simulator.mobility.data.PublicTransportationStop;
+import allow.simulator.mobility.data.PublicTransportationTrip;
 import allow.simulator.world.Street;
 
 /**
@@ -21,9 +21,8 @@ import allow.simulator.world.Street;
  *
  */
 public class PrepareTrip extends Activity {
-	
 	// Trip to execute.
-	private Trip trip;
+	private PublicTransportationTrip trip;
 	
 	/**
 	 * Constructor.
@@ -33,7 +32,7 @@ public class PrepareTrip extends Activity {
 	 * @param entity Public transportation entity to execute the trip.
 	 * @param trip Trip to execute.
 	 */
-	public PrepareTrip(PublicTransportation entity, Trip trip) {
+	public PrepareTrip(PublicTransportation entity, PublicTransportationTrip trip) {
 		super(Activity.Type.PREPARE_TRIP, entity);
 		this.trip = trip;
 	}
@@ -50,7 +49,7 @@ public class PrepareTrip extends Activity {
 		PublicTransportation p = (PublicTransportation) entity;
 		
 		// Check trip.
-		List<Stop> tripStops = trip.getStops();
+		List<PublicTransportationStop> tripStops = trip.getStops();
 		List<LocalTime> tripStopTimes = trip.getStopTimes();
 		
 		if ((tripStops.size() != tripStopTimes.size()) || tripStops.size() == 0
@@ -62,7 +61,7 @@ public class PrepareTrip extends Activity {
 		}
 		// Prepare trip by creating a PickUpAndWait activity for each stop and
 		// a DriveToNextStop for each trace, and finally set transport trip.
-		Iterator<Stop> stopIterator = trip.getStops().iterator();
+		Iterator<PublicTransportationStop> stopIterator = trip.getStops().iterator();
 		Iterator<LocalTime> timesIterator = trip.getStopTimes().iterator();
 		Iterator<List<Street>> tracesIterator = trip.getTraces().iterator();
 
@@ -86,7 +85,7 @@ public class PrepareTrip extends Activity {
 		
 		// Prepare ensemble structure.
 		EnsembleManager ensembles = p.getContext().getEnsembleManager();
-		Ensemble transport = ensembles.getEnsemble("TransportAgency" + p.getTransportAgency().getAgencyId() + "Ensemble");
+		Ensemble transport = ensembles.getEnsemble("TransportAgency" + p.getTransportationAgency().getAgencyId() + "Ensemble");
 		transport.join(p);
 		ensembles.createEnsemble(trip.getTripId(), p);
 		

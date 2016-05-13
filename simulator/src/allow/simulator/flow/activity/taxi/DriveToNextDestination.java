@@ -1,9 +1,9 @@
-package allow.simulator.flow.activity.publictransportation;
+package allow.simulator.flow.activity.taxi;
 
 import java.util.List;
 
-import allow.simulator.entity.Entity;
-import allow.simulator.entity.PublicTransportation;
+import allow.simulator.entity.Person;
+import allow.simulator.entity.Taxi;
 import allow.simulator.entity.knowledge.Experience;
 import allow.simulator.entity.knowledge.TravelExperience;
 import allow.simulator.flow.activity.Activity;
@@ -14,20 +14,11 @@ import allow.simulator.util.Geometry;
 import allow.simulator.world.Street;
 import allow.simulator.world.StreetSegment;
 
-/**
- * Represents an activity to drive to a next stop of a trip of a means of
- * public transportation.
- * 
- * @author Andreas Poxrucker (DFKI)
- *
- */
-public class DriveToNextStop extends MovementActivity {
-
-	private double fillingLevel;
+public class DriveToNextDestination extends MovementActivity {
 	
-	public DriveToNextStop(PublicTransportation entity, List<Street> path) {
+	public DriveToNextDestination(Taxi taxi, List<Street> path) {
 		// Constructor of super class.
-		super(Activity.Type.DRIVE_TO_NEXT_STOP, entity, path);
+		super(Activity.Type.DRIVE_TO_NEXT_DESTINATION, taxi, path);
 		
 		if (!path.isEmpty()) {
 			currentSegment.addVehicle();
@@ -44,31 +35,25 @@ public class DriveToNextStop extends MovementActivity {
 		// Note tStart.
 		if (tStart == -1) {
 			tStart = entity.getContext().getTime().getTimestamp();
-			PublicTransportation t = (PublicTransportation) entity;
-			fillingLevel = ((double) t.getPassengers().size()) / t.getCapacity();
 		}
 				
 		// Transportation entity.
-		PublicTransportation p = (PublicTransportation) entity;
-				
-		// Register relations update.
-		//p.getRelations().addToUpdate(Relation.Type.BUS);		
-		//p.getRelations().addToUpdate(Relation.Type.DISTANCE);
+		Taxi taxi = (Taxi) entity;
 		
 		// Move public transportation and passengers.
 		double rem = travel(deltaT);
-		p.setPosition(getCurrentPosition());
+		taxi.setPosition(getCurrentPosition());
 		
-		for (Entity pass : p.getPassengers()) {
-			pass.setPosition(p.getPosition());
+		for (Person pass : taxi.getPassengers()) {
+			pass.setPosition(taxi.getPosition());
 		}
 				
 		if (isFinished()) {
 					
 			for (Experience ex : experiences) {
-				p.getKnowledge().collect(ex);
+				taxi.getKnowledge().collect(ex);
 				
-				for (Entity pass : p.getPassengers()) {
+				for (Person pass : taxi.getPassengers()) {
 					pass.getKnowledge().collect(ex);
 				}
 			}
@@ -119,12 +104,12 @@ public class DriveToNextStop extends MovementActivity {
 					Experience newEx = new TravelExperience(street,
 							sumTravelTime,
 							street.getLength() * 0.0008,
-							TType.BUS, 
+							TType.TAXI, 
 							tStart,
 							tEnd,
 							s.getNumberOfVehicles(),
-							fillingLevel,
-							((PublicTransportation) entity).getCurrentTrip().getTripId(),
+							-1.0,
+							((Taxi) entity).getCurrentTrip().getTripId(),
 							entity.getContext().getWeather().getCurrentState());
 					experiences.add(newEx);
 					streetTravelTime = 0.0;

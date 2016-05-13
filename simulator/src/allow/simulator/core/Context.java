@@ -4,7 +4,9 @@ import java.util.List;
 
 import allow.simulator.ensemble.EnsembleManager;
 import allow.simulator.mobility.data.IDataService;
+import allow.simulator.mobility.planner.BikeRentalPlanner;
 import allow.simulator.mobility.planner.IPlannerService;
+import allow.simulator.mobility.planner.TaxiPlanner;
 import allow.simulator.statistics.Statistics;
 import allow.simulator.world.IWorld;
 import allow.simulator.world.Weather;
@@ -35,6 +37,12 @@ public class Context {
 	// Instance of FlexiBus planner service.
 	private IPlannerService flexiBusService;
 	
+	// Instance if taxi planner service
+	private TaxiPlanner taxiPlannerService;
+	
+	// Bike rental planner service
+	private BikeRentalPlanner bikeRentalService;
+	
 	// Statistics.
 	private Statistics stats;
 	
@@ -59,6 +67,8 @@ public class Context {
 			List<IDataService> dataServices,
 			List<IPlannerService> plannerServices,
 			IPlannerService flexiBusService,
+			TaxiPlanner taxiPlannerService,
+			BikeRentalPlanner bikeRentalPlanner,
 			Weather weather,
 			Statistics stats,
 			EnsembleManager ensembleManager,
@@ -68,6 +78,8 @@ public class Context {
 		this.dataServices = dataServices;
 		this.plannerServices = plannerServices;
 		this.flexiBusService = flexiBusService;
+		this.taxiPlannerService = taxiPlannerService;
+		this.bikeRentalService = bikeRentalPlanner;
 		this.weather = weather;
 		this.stats = stats;
 		this.ensembleManager = ensembleManager;
@@ -117,6 +129,24 @@ public class Context {
 	 */
 	public IPlannerService getFlexiBusPlannerService() {
 		return flexiBusService;
+	}
+	
+	/**
+	 * Returns the taxi planner service instance.
+	 * 
+	 * @return Taxi planner service instance.
+	 */
+	public TaxiPlanner getTaxiPlannerService() {
+		return taxiPlannerService;
+	}
+	
+	/**
+	 * Returns the bike rental planner service instance.
+	 * 
+	 * @return Bike planner service instance.
+	 */
+	public BikeRentalPlanner getBikeRentalPlannerService() {
+		return bikeRentalService;
 	}
 	
 	/**

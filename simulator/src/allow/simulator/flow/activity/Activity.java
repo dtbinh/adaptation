@@ -16,8 +16,6 @@ public abstract class Activity {
 		/**
 		 * Bus activities.
 		 */
-		EXECUTE_TRIP,
-		
 		PREPARE_TRIP,
 		
 		PICKUP_AND_WAIT,
@@ -56,14 +54,24 @@ public abstract class Activity {
 		WAIT,
 		
 		/**
-		 * Transport agency activities.
+		 * Taxi activities.
 		 */
-		SCHEDULE_NEXT_TRIPS,
+		PREPARE_TAXI_TRIP,
+		
+		DRIVE_TO_NEXT_DESTINATION,
+		
+		PICK_UP_OR_DROP,
+		
+		RETURN_TO_TAXI_AGENCY,
 		
 		/**
-		 * FlexiBus agency activities.
+		 * Transportation agency activities.
 		 */
+		SCHEDULE_NEXT_TRIPS,
+
 		SCHEDULE_NEXT_FLEXIBUS_TRIPS,
+		
+		SCHEDULE_NEXT_TAXI_TRIPS,
 		
 		/**
 		 * Smart planner activities.

@@ -191,7 +191,7 @@ public class StreetSegment extends Observable implements Comparable<StreetSegmen
 		// n : scaling of impact of single car
 		//drivingSpeed = (maxSpeed - MIN_DRIVING_SPEED) / (1 + Math.exp(9 * carsPerMeter - 7)) + MIN_DRIVING_SPEED;
 		//drivingSpeed = (maxSpeed - MIN_DRIVING_SPEED) / (1 + Math.exp(9 * carsPerMeter - 5)) + MIN_DRIVING_SPEED;
-		drivingSpeed = (maxSpeed - MIN_DRIVING_SPEED) / (1 + Math.exp(9 * carsPerMeter - 3)) + MIN_DRIVING_SPEED;
+		drivingSpeed = (maxSpeed - MIN_DRIVING_SPEED) / (1 + Math.exp(9 * carsPerMeter - 5)) + MIN_DRIVING_SPEED;
 	}
 	
 	@Override

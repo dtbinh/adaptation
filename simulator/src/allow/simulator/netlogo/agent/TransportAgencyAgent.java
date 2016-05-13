@@ -5,7 +5,7 @@ import org.nlogo.agent.World;
 import org.nlogo.api.AgentException;
 
 import allow.simulator.entity.Entity;
-import allow.simulator.entity.TransportAgency;
+import allow.simulator.entity.TransportationAgency;
 
 /**
  * Wrapper for 
@@ -15,9 +15,9 @@ import allow.simulator.entity.TransportAgency;
  */
 public class TransportAgencyAgent extends Turtle implements IAgent {
 	// Implementation of an agency.
-	private TransportAgency aImpl;
+	private TransportationAgency aImpl;
 	
-	public TransportAgencyAgent(World world, TransportAgency a) {
+	public TransportAgencyAgent(World world, TransportationAgency a) {
 		super(world, world.getBreed("TRANSPORTAGENCIES"), 0.0, 0.0);
 		hidden(true);
 		aImpl = a;

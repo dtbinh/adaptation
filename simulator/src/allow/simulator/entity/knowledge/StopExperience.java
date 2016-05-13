@@ -3,19 +3,19 @@ package allow.simulator.entity.knowledge;
 import java.util.List;
 
 import allow.simulator.entity.Entity;
-import allow.simulator.mobility.data.Stop;
+import allow.simulator.mobility.data.PublicTransportationStop;
 import allow.simulator.util.Coordinate;
 import allow.simulator.world.Weather;
 
 public final class StopExperience extends Experience {
 
-	private Stop stop;
+	private PublicTransportationStop stop;
 	private List<Entity> passengers;
 	private long timeArrival;
 	private long timeDeparture;
 	private Weather.State weather;
 	
-	public StopExperience(Stop stop,
+	public StopExperience(PublicTransportationStop stop,
 			List<Entity> passengers,
 			long timeArrival,
 			long timeDeparture,

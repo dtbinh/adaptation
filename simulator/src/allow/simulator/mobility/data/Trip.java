@@ -1,45 +1,35 @@
 package allow.simulator.mobility.data;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-import allow.simulator.mobility.data.gtfs.GTFSServiceException;
 import allow.simulator.world.Street;
 
-public class Trip {
+public abstract class Trip {
 	// Id of trip.
-	private String tripId;
-	private LocalDate startingDate;
-	private LocalDate endingDate;
-	private List<GTFSServiceException> exceptions;
+	protected final String tripId;
 	
 	// List of stops of a trip.
-	private List<Stop> stops;
+	protected final List<Stop> stops;
 		
 	// List of stop times of a trip.
-	private List<LocalTime> stopTimes;
+	protected final List<LocalTime> stopTimes;
 	
 	// Trace of this trip.
-	private List<List<Street>> trace;
+	protected final List<List<Street>> trace;
 	
 	/**
-	 * Constructor.
-	 * Creates a new trip with given Id, stops, and trace.
+	 * Creates a new trip instance with given Id, stops, and trace.
 	 * 
 	 * @param tripId Id of the trip.
 	 * @param schedule Schedule of the trip including stop and stop times.
 	 * @param trace Trace between stops.
 	 */
-	public Trip(String tripId, LocalDate starting, LocalDate ending,
-			List<GTFSServiceException> exceptions, 
+	protected Trip(String tripId,
 			List<Stop> stops,
 			List<LocalTime> stopTimes,
 			List<List<Street>> trace) {
 		this.tripId = tripId;
-		this.startingDate = starting;
-		this.endingDate = ending;
-		this.exceptions = exceptions;
 		this.stops = stops;
 		this.stopTimes = stopTimes;
 		this.trace = trace;
@@ -48,7 +38,7 @@ public class Trip {
 	/**
 	 * Returns Id of this trip.
 	 * 
-	 * @return Id of this trip.
+	 * @return Id of this trip
 	 */
 	public String getTripId() {
 		return tripId;
@@ -58,7 +48,7 @@ public class Trip {
 	 * Returns the traces (sequence of geographical points between two stops)
 	 * of this trip.
 	 * 
-	 * @return Trace of this trip.
+	 * @return Trace of this trip
 	 */
 	public List<List<Street>> getTraces() {
 		return trace;
@@ -67,30 +57,22 @@ public class Trip {
 	/**
 	 * Returns the starting time of this trip.
 	 * 
-	 * @return Starting time of this trip.
+	 * @return Starting time of this trip
 	 */
 	public LocalTime getStartingTime() {
 		return stopTimes.get(0);
 	}
 	
-	public List<Stop> getStops() {
-		return stops;
-	}
-	
+	/**
+	 * Returns the stops of this trip.
+	 * 
+	 * @return Stops if this trip
+	 */
 	public List<LocalTime> getStopTimes() {
 		return stopTimes;
 	}
 	
-	public boolean isValidThisDay(LocalDate day) {
-		boolean isValid = day.compareTo(startingDate) >= 0 && day.compareTo(endingDate) <= 0;
-		
-		for (int i = 0; i < exceptions.size(); i++) {
-			isValid = isValid && day.compareTo(exceptions.get(i).getDate()) != 0;
-		}
-		return isValid;
-	}
-	
 	public String toString() {
-		return tripId + " " + startingDate + " " + endingDate;
+		return "[Trip " + tripId + "]";
 	}
 }

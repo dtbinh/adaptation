@@ -36,9 +36,7 @@ public class Itinerary {
     public long reqId;
     
     public int reqNumber;
-    
-    public int safetyLevel;
-    
+        
     /**
      * Time that the trip departs.
      */
@@ -151,6 +149,9 @@ public class Itinerary {
 			case WALK:
 				return 3;
 				
+			case TAXI:
+				return 4;
+				
 			default:
 				break;
 				
@@ -186,7 +187,6 @@ public class Itinerary {
     	ret.legs = legs;
     	ret.reqId = reqId;
     	ret.reqNumber = reqNumber;
-    	ret.safetyLevel = safetyLevel;
     	ret.startTime = startTime;
     	ret.to = to;
     	ret.transfers = transfers;

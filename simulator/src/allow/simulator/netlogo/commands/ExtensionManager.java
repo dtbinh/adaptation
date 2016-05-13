@@ -27,6 +27,8 @@ public class ExtensionManager extends DefaultClassManager {
 		primitiveManager.addPrimitive("get-region", new GetRegion());
 		primitiveManager.addPrimitive("get-person-roles", new GetPersonRoles());
 		primitiveManager.addPrimitive("get-person-role", new GetPersonRole());
+		primitiveManager.addPrimitive("test-taxi", new TestTaxi());
+		primitiveManager.addPrimitive("test-shared-taxi", new TestSharedTaxi());
 	}
 	
 	@Override

@@ -14,14 +14,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public abstract class OTPJourneyPlanner implements IPlannerService {
-
 	// Json mapper to parse planner responses.
 	protected static ObjectMapper mapper = new ObjectMapper();
 
-	@Override
-	public abstract List<Itinerary> requestSingleJourney(JourneyRequest request);
-
-	
 	/**
 	 * Parses an itinerary from a Json node.
 	 * 

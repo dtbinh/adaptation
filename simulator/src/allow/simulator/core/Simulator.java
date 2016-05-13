@@ -16,15 +16,16 @@ import org.nlogo.agent.World;
 
 import allow.simulator.ensemble.Ensemble;
 import allow.simulator.ensemble.EnsembleManager;
-import allow.simulator.entity.Bus;
-import allow.simulator.entity.CarPoolingAgency;
 import allow.simulator.entity.Entity;
 import allow.simulator.entity.Entity.Type;
 import allow.simulator.entity.FlexiBusAgency;
 import allow.simulator.entity.Person;
 import allow.simulator.entity.PlanGenerator;
-import allow.simulator.entity.PublicTransportAgency;
-import allow.simulator.entity.TransportAgency;
+import allow.simulator.entity.PublicTransportation;
+import allow.simulator.entity.PublicTransportationAgency;
+import allow.simulator.entity.Taxi;
+import allow.simulator.entity.TaxiAgency;
+import allow.simulator.entity.TransportationAgency;
 import allow.simulator.entity.UrbanMobilitySystem;
 import allow.simulator.entity.knowledge.EvoKnowledge;
 import allow.simulator.entity.utility.Preferences;
@@ -35,12 +36,15 @@ import allow.simulator.mobility.data.MobilityRepository;
 import allow.simulator.mobility.data.OfflineDataService;
 import allow.simulator.mobility.data.OnlineDataService;
 import allow.simulator.mobility.data.TransportationRepository;
+import allow.simulator.mobility.planner.BikeRentalPlanner;
 import allow.simulator.mobility.planner.FlexiBusPlanner;
 import allow.simulator.mobility.planner.IPlannerService;
 import allow.simulator.mobility.planner.JourneyRepository;
 import allow.simulator.mobility.planner.OfflineJourneyPlanner;
 import allow.simulator.mobility.planner.OnlineJourneyPlanner;
+import allow.simulator.mobility.planner.TaxiPlanner;
 import allow.simulator.statistics.Statistics;
+import allow.simulator.util.Coordinate;
 import allow.simulator.world.IWorld;
 import allow.simulator.world.NetLogoWorld;
 import allow.simulator.world.Weather;
@@ -115,6 +119,9 @@ public class Simulator {
 			}
 		}
 		
+		// Create time and weather.
+		Time time = new Time(config.getStartingDate(), 5);
+				
 		// Create planner services.
 		System.out.println("Creating planner services...");
 		List<IPlannerService> plannerServices = new ArrayList<IPlannerService>();
@@ -134,15 +141,21 @@ public class Simulator {
 				plannerServices.add(new OfflineJourneyPlanner(journeyRepository, config.getTracesOutputPath()));
 			}
 		}		
-		// Create time and weather.
-		Time time = new Time(config.getStartingDate(), 5);
 		
+		// Create taxi planner service
+		Coordinate taxiRank = new Coordinate(11.1198448, 46.0719489);
+		TaxiPlanner taxiPlannerService = new TaxiPlanner(plannerServices, time, taxiRank);
+		
+		// Create bike rental service
+		Coordinate bikeRentalStation = new Coordinate(11.1248895,46.0711398);
+		BikeRentalPlanner bikeRentalPlanner = new BikeRentalPlanner(plannerServices, time, bikeRentalStation);
 		System.out.println("Loading weather model...");
 		Weather weather = new Weather(config.getWeatherPath(), time);
 				
 		// Create global context from world, time, planner and data services, and weather.
 		context = new Context(world, time, dataServices, plannerServices, new FlexiBusPlanner(),
-				weather, new Statistics(800), new EnsembleManager(), params);
+				taxiPlannerService, bikeRentalPlanner, weather, new Statistics(800),
+				new EnsembleManager(), params);
 		
 		// Setup entities.
 		System.out.println("Loading entities from file...");
@@ -175,15 +188,11 @@ public class Simulator {
 		EnsembleManager ensembles = context.getEnsembleManager();
 		// Prepare basic ensemble structure.
 		Entity flexiBusAgency = TransportationRepository.Instance().getFlexiBusAgency();
-		Entity carPoolingAgency = TransportationRepository.Instance().getCarPoolingAgency();
 		Ensemble flexiBusEnsemble = ensembles.createEnsemble(EnsembleManager.FLEXIBUS_AGENCY_ENSEMBLE, flexiBusAgency);
-		Ensemble carPoolEnsemble = ensembles.createEnsemble(EnsembleManager.CARPOOLING_AGENCY_ENSEMBLE, flexiBusAgency);
-		flexiBusEnsemble.join(carPoolingAgency);
-		carPoolEnsemble.join(flexiBusAgency);
 		
-		Map<String, TransportAgency> gtfsAgencies = TransportationRepository.Instance().getGTFSTransportAgencies();
+		Map<String, PublicTransportationAgency> gtfsAgencies = TransportationRepository.Instance().getGTFSTransportAgencies();
 		
-		for (TransportAgency agency : gtfsAgencies.values()) {
+		for (TransportationAgency agency : gtfsAgencies.values()) {
 			ensembles.createEnsemble("TransportAgency" + agency.getAgencyId() + "Ensemble", agency);
 		}
 	}
@@ -237,19 +246,23 @@ public class Simulator {
 		
 		switch (e) {
 			case BUS:
-				newEntity = new Bus(ids++, new Utility(), new Preferences(), context, 25);
+				newEntity = new PublicTransportation(ids++, new Utility(), new Preferences(), context, 25);
 				break;
-			
+				
+			case TAXI:
+				newEntity = new Taxi(ids++, new Utility(), new Preferences(), context, 3);
+				break;
+				
 			case PUBLICTRANSPORTAGENCY:
-				newEntity = new PublicTransportAgency(ids++, new Utility(), new Preferences(), context);
+				newEntity = new PublicTransportationAgency(ids++, new Utility(), new Preferences(), context);
 				break;
 			
 			case FLEXIBUSAGENCY:
 				newEntity = new FlexiBusAgency(ids++, new Utility(), new Preferences(), context);
 				break;
 				
-			case CARPOOLINGAGENCY:
-				newEntity = new CarPoolingAgency(ids++, new Utility(), new Preferences(), context);
+			case TAXIAGENCY:
+				newEntity = new TaxiAgency(ids++, new Utility(), new Preferences(), context);
 				break;
 				
 			case URBANMOBILITYSYSTEM:

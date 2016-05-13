@@ -15,9 +15,9 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 
 import allow.simulator.core.EvoKnowledgeConfiguration;
-import allow.simulator.entity.Bus;
 import allow.simulator.entity.Entity;
 import allow.simulator.entity.Person;
+import allow.simulator.entity.PublicTransportation;
 import allow.simulator.mobility.data.TType;
 import allow.simulator.mobility.planner.Itinerary;
 import allow.simulator.mobility.planner.Leg;
@@ -114,7 +114,7 @@ public class EvoKnowledge {
 		if (entity instanceof Person) {
 			handlerChain = ExchangeHandler.StandardPersonChain;
 			
-		} else if (entity instanceof Bus) {
+		} else if (entity instanceof PublicTransportation) {
 			handlerChain = ExchangeHandler.StandardBusChain;
 		}
 		travelExperienceBuffer = new ArrayList<TravelExperience>();

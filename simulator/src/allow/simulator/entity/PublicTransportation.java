@@ -1,180 +1,89 @@
 package allow.simulator.entity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import allow.simulator.core.Context;
 import allow.simulator.entity.utility.Preferences;
 import allow.simulator.entity.utility.Utility;
-import allow.simulator.mobility.data.Stop;
+import allow.simulator.mobility.data.PublicTransportationStop;
 import allow.simulator.mobility.data.Trip;
 
 /**
- * Abstract class modelling a means of public transportation characterized by
- * a transport agency running the means, a list of passengers, and a capacity.
+ * Represents a bus entity which is a subtype of a transportation entity.
  * 
  * @author Andreas Poxrucker (DFKI)
  *
  */
-public abstract class PublicTransportation extends Entity {
-	// Agency the bus is used by.
-	protected TransportAgency agency;
-		
-	// List of passengers.
-	protected List<Person> passengers;
-			
-	// Capacity.
-	protected int capacity;
-			
-	// Current trip and stop the transportation mean is operating. 
-	protected Trip currentTrip;
-	protected Stop currentStop;
-	
-	// Current delay.
-	protected long currentDelay;
-	
+public final class PublicTransportation extends TransportationEntity {
 	/**
-	 * Constructor.
-	 * Creates a new instance of a means of public transportation.
+	 * Creates new instance of a public transportation mean.
 	 * 
-	 * @param id Id of means.
-	 * @param type Type of means.
-	 * @param utility Utility function.
-	 * @param context Context of means.
-	 * @param capacity Capacity of means.
+	 * @param id Id of the transportation mean.
+	 * @param utility Utility function of the transportation mean.
+	 * @param context Context of the transportation mean.
+	 * @param capacity Capacity of the transportation mean.
 	 */
-	protected PublicTransportation(long id, Type type, Utility utility, Preferences prefs, Context context, int capacity) {
-		super(id, type, utility, prefs, context);
-		this.capacity = capacity;
-		passengers = new ArrayList<Person>(capacity);
-		currentDelay = 0;
+	public PublicTransportation(long id, Utility utility, Preferences prefs, Context context, int capacity) {
+		super(id, Type.BUS, utility, prefs, context, capacity);
 	}
 	
 	/**
-	 * Returns the current delay of the means of transportation.
+	 * Returns the stop the public transportation entity is currently waiting at.
 	 * 
-	 * @return Current delay of the means of transportation.
+	 * @return Stop the public transportation entity is currently waiting at or null, 
+	 * if entity is inactive or moving.
 	 */
-	public long getCurrentDelay() {
-		return currentDelay;
+	public PublicTransportationStop getCurrentStop() {
+		return (PublicTransportationStop) currentStop;
 	}
 	
 	/**
-	 * Sets the current delay of the means of transportation.
+	 * Sets the stop the public transportation entity is currently waiting at.
 	 * 
-	 * @param newDelay New delay.
+	 * @param s Stop the public transportation entity is waiting at. Can be null to
+	 * indicate that the public transportation entity is inactive or driving.
 	 */
-	public void setCurrentDelay(long newDelay) {
-		currentDelay = newDelay;
-	}
-	
-	/**
-	 * Returns the stop the means of public transportation is currently waiting at.
-	 * 
-	 * @return Stop the bus is currently waiting at or null, if bus is 
-	 * 	       inactive or driving.
-	 */
-	public Stop getCurrentStop() {
-		return currentStop;
-	}
-	
-	/**
-	 * Set stop the means of public transportation is currently waiting at.
-	 * 
-	 * @param s Stop the means of public transportation is waiting at. Can be
-	 * null to indicate that means of public transportation is inactive or driving.
-	 */
-	public void setCurrentStop(Stop s) {
+	public void setCurrentStop(PublicTransportationStop s) {
 		currentStop = s;
 	}
 	
 	/**
-	 * Set trip of the means of public transportation is operating.
+	 * Sets trip of the public transportation entity is currently operating.
 	 * 
-	 * @param route Route the means of public transportation operates.
+	 * @param trip Trip the public transportation entity operates. Can be null to
+	 * indicate that the public transportation entity does not operate a trip
 	 */
 	public void setCurrentTrip(Trip trip) {
 		currentTrip = trip;
 	}
 	
 	/**
-	 * Returns trip the means of public transportation is operating.
+	 * Returns trip the public transportation entity is operating.
 	 * 
-	 * @return Trip the means of public transportation is operating.
+	 * @return Trip the public transportation entity is operating
 	 */
 	public Trip getCurrentTrip() {
 		return currentTrip;
 	}
 	
 	/**
-	 * Adds a passenger to the means of public transportation if the bus has 
-	 * capacity.
+	 * Returns the agency the public transportation entity is used by.
 	 * 
-	 * @param p The person to add to the means of public transportation.
-	 * @return True, if person was added to the means of public transportation,
-	 * false otherwise.
+	 * @return Agency the public transportation entity is used by.
 	 */
-	public boolean addPassenger(Person p) {
-		boolean added = false;
-		
-		synchronized(passengers) {
-			
-			if (passengers.size() < capacity) {
-				added = passengers.add(p);
-			}
-		}
-		return added;
-	}
-	
-	/**
-	 * Removes a passenger from the means of public transportation.
-	 * 
-	 * @param p The passenger to remove.
-	 */
-	public void removePassenger(Person p) {
-		
-		synchronized(passengers) {
-			passengers.remove(p);
-		}
-	}
-	
-	/**
-	 * Get list of passengers of the means of public transportation.
-	 * 
-	 * @return List of passengers of the means of public transportation.
-	 */
-	public List<Person> getPassengers() {
-		return passengers;
-	}
-	
-	public int getCapacity() {
-		return capacity;
-	}
-	
-	/**
-	 * Returns the agency the means of public transportation is used by.
-	 * 
-	 * @return Agency the bus is used by.
-	 */
-	public TransportAgency getTransportAgency() {
-		return agency;
+	public PublicTransportationAgency getTransportationAgency() {
+		return (PublicTransportationAgency) agency;
 	}
 
 	/**
-	 * Sets the agency the bus belongs to.
+	 * Sets the agency the public transportation entity is used by.
 	 * 
-	 * @param agency Agency the bus belongs to.
+	 * @param agency Agency the public transportation entity is used by.
 	 */
-	public void setTransportAgency(TransportAgency agency) {
+	public void setTransportAgency(PublicTransportationAgency agency) {
 		this.agency = agency;
 	}
-
+	
+	@Override
 	public String toString() {
 		return "[PublicTransportation" + id + "]";
-	}
-
-	@Override
-	public boolean isActive() {
-		return (currentTrip != null);
 	}
 }

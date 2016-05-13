@@ -6,7 +6,7 @@ import allow.simulator.entity.utility.Utility;
 import allow.simulator.flow.activity.flexibusagency.StartNextTrips;
 import allow.simulator.mobility.planner.FlexiBusPlanner;
 
-public class FlexiBusAgency extends TransportAgency {
+public class FlexiBusAgency extends TransportationAgency {
 	// Planner instance is required to poll trips to schedule. 
 	private FlexiBusPlanner planner;
 	

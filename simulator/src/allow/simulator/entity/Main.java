@@ -6,8 +6,9 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -19,12 +20,12 @@ import allow.simulator.entity.Person.Gender;
 import allow.simulator.entity.Person.Profile;
 import allow.simulator.entity.utility.Preferences;
 import allow.simulator.entity.utility.UtilityWithoutPreferences;
-import allow.simulator.mobility.data.RType;
 import allow.simulator.mobility.data.TType;
 import allow.simulator.mobility.planner.IPlannerService;
 import allow.simulator.mobility.planner.Itinerary;
 import allow.simulator.mobility.planner.JourneyRequest;
 import allow.simulator.mobility.planner.OnlineJourneyPlanner;
+import allow.simulator.mobility.planner.RequestId;
 import allow.simulator.util.Coordinate;
 import allow.simulator.util.Geometry;
 import allow.simulator.world.StreetMap;
@@ -152,14 +153,16 @@ public class Main {
 		DayOfWeek.SATURDAY.getValue(),
 		DayOfWeek.SUNDAY.getValue()
 	};
-	
-	private static DateTimeFormatter format = DateTimeFormatter.ofPattern("hh:mma");
-	
+		
 	private static boolean validateParameters(IPlannerService planner, TravelEvent event, boolean hasCar, boolean hasBike, StreetMap map) {
 		List<Itinerary> it = new ArrayList<Itinerary>();
+		LocalDate date = LocalDate.of(2014, 8, 25);
+		RequestId reqId = new RequestId();
+		
 		// Request transit journeys.
-		JourneyRequest s = createRequest(event.getStartingPoint(), event.getDestination(), event.getTime(),
-				event.arriveBy(), transitJourney, 500);
+		JourneyRequest s = JourneyRequest.createRequest(event.getStartingPoint(), event.getDestination(), LocalDateTime.of(date, event.getTime()),
+				event.arriveBy(), transitJourney, null, reqId);
+		s.MaximumWalkDistance = 500;
 		List<Itinerary> temp = planner.requestSingleJourney(s);
 		if (temp != null) it.addAll(temp);
 
@@ -197,38 +200,6 @@ public class Main {
 		
 		// Itinerary i = it.get(0);
 		//return LocalDateTime.ofInstant(Instant.ofEpochMilli(Long.parseLong(i.startTime)), ZoneId.of("UTC")).getHour() <= event.getTime().getHour();
-	}
-	
-	private static JourneyRequest createRequest(Coordinate from,
-			Coordinate to, 
-			LocalTime time,
-			boolean arriveBy,
-			TType modes[],
-			int maxWalk) {
-		JourneyRequest s = new JourneyRequest();
-		s.Date = "08/25/2014";
-		
-		if (arriveBy) {
-			s.ArrivalTime = time.format(format);
-		} else {
-			s.DepartureTime = time.format(format);
-		}
-
-		// Set starting position and destination.
-		s.From.x = from.x;
-		s.From.y = from.y;
-		s.To.x = to.x;
-		s.To.y = to.y;
-
-		// Set random route type.
-		s.RouteType = RType.QUICK;
-
-		// Set predefined choice of means of transportation.
-		s.TransportTypes = modes;
-		s.ResultsNumber = 1;
-		s.MaximumCosts = 25;
-		s.MaximumWalkDistance = maxWalk;
-		return s;
 	}
 	
 	private static Coordinate newLocation(DistrictLayer l, int distribution[]) {

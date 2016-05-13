@@ -16,14 +16,16 @@ import org.nlogo.agent.Patch;
 import org.nlogo.agent.Turtle;
 import org.nlogo.api.AgentException;
 
-import allow.simulator.entity.Bus;
 import allow.simulator.entity.Entity;
 import allow.simulator.entity.Person;
-import allow.simulator.entity.TransportAgency;
+import allow.simulator.entity.PublicTransportation;
+import allow.simulator.entity.Taxi;
+import allow.simulator.entity.TransportationAgency;
 import allow.simulator.flow.activity.Activity.Type;
 import allow.simulator.netlogo.agent.BusAgent;
 import allow.simulator.netlogo.agent.IAgent;
 import allow.simulator.netlogo.agent.PersonAgent;
+import allow.simulator.netlogo.agent.TaxiAgent;
 import allow.simulator.netlogo.agent.TransportAgencyAgent;
 import allow.simulator.util.Coordinate;
 import allow.simulator.util.Geometry;
@@ -130,16 +132,21 @@ public class NetLogoWorld extends World {
 			
 			case BUS:
 			case FLEXIBUS:
-				newAgent = new BusAgent(netlogoWorld, (Bus) e);
+				newAgent = new BusAgent(netlogoWorld, (PublicTransportation) e);
 				break;
 			
 			case PERSON:
 				newAgent = new PersonAgent(netlogoWorld, (Person) e);
 				break;
+			
+			case TAXI:
+				newAgent = new TaxiAgent(netlogoWorld, (Taxi) e);
+				break;
 				
 			case PUBLICTRANSPORTAGENCY:
 			case FLEXIBUSAGENCY:
-				newAgent = new TransportAgencyAgent(netlogoWorld, (TransportAgency) e);
+			case TAXIAGENCY:
+				newAgent = new TransportAgencyAgent(netlogoWorld, (TransportationAgency) e);
 				break;
 				
 			default:

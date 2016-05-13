@@ -33,7 +33,7 @@ public class ReturnToAgency extends Activity {
 		// p.getRelations().addToUpdate(Relation.Type.BUS);
 		
 		if (p.getPassengers().size() > 0) {
-			System.out.println("Warning: Passengers still on bus " + p.toString() + " of trip " + p.getCurrentTrip().getTripId());
+			System.out.println("Warning: Passengers still on public transportation " + p.toString() + " of trip " + p.getCurrentTrip().getTripId());
 
 			for (int i = 0; i < p.getPassengers().size(); i++) {
 				Person pers = p.getPassengers().get(i);
@@ -42,11 +42,11 @@ public class ReturnToAgency extends Activity {
 			//throw new IllegalStateException("Error: " + p + " returning to agency still has passengers");
 		}
 		// Finish trip at agency.
-		p.getTransportAgency().finishTrip(p.getCurrentTrip(), p);
+		p.getTransportationAgency().finishTrip(p.getCurrentTrip(), p);
 		
 		// Fix ensemble structure.
 		EnsembleManager ensembles = p.getContext().getEnsembleManager();
-		Ensemble transport = ensembles.getEnsemble("TransportAgency" + p.getTransportAgency().getAgencyId() + "Ensemble");
+		Ensemble transport = ensembles.getEnsemble("TransportAgency" + p.getTransportationAgency().getAgencyId() + "Ensemble");
 		transport.leave(p);
 		ensembles.destroyEnsemble(p.getCurrentTrip().getTripId());
 

@@ -9,44 +9,59 @@ package allow.simulator.mobility.data;
 public enum TType {
 	
 	/**
-	 * Walking.
+	 * Walking
 	 */
 	WALK,
 	
 	/**
-	 * Driving.
+	 * Driving
 	 */
 	CAR,
 	
 	/**
-	 * Going by bus.
+	 * Going by bus
 	 */
 	BUS,
 	
 	/**
-	 * Going by train.
+	 * Going by train
 	 */
 	RAIL,
 	
 	/**
-	 * Going by cable car.
+	 * Going by cable car
 	 */
 	CABLE_CAR,
 	
 	/**
-	 * Going by bike.
+	 * Going by bike
 	 */
 	BICYCLE,
 	
 	/**
-	 * Using general public transport.
+	 * Going by shared bike
+	 */
+	SHARED_BICYCLE,
+	
+	/**
+	 * Using general public transport
 	 */
 	TRANSIT,
 	
 	/**
-	 * Using a FlexiBus.
+	 * Using a FlexiBus
 	 */
-	FLEXIBUS;
+	FLEXIBUS,
+	
+	/**
+	 * Using a normal taxi
+	 */
+	TAXI,
+	
+	/**
+	 * Sharing a taxi 
+	 */
+	SHARED_TAXI;
 	
 	public static byte getEncoding(TType type) {
 		
@@ -74,6 +89,15 @@ public enum TType {
 		
 		case FLEXIBUS:
 			return 7;
+		
+		case TAXI:
+			return 8;
+			
+		case SHARED_TAXI:
+			return 9;
+			
+		case SHARED_BICYCLE:
+			return 10;
 			
 		default:
 			throw new IllegalArgumentException("Error: Unknown transporation type " + type);
