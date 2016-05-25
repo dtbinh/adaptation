@@ -9,8 +9,7 @@ import allow.simulator.util.Coordinate;
  * @author Andreas Poxrucker (DFKI)
  *
  */
-public class WorldTransformation {
-
+public final class WorldTransformation {
 	// The envelope (i.e. bounding rectangle) of the first space.
 	private double env1[];
 	
@@ -31,6 +30,8 @@ public class WorldTransformation {
 	 * @param env2 Envelope of second space.
 	 */
 	public WorldTransformation(double env1[], double env2[]) {
+		this.env1 = env1;
+		this.env2 = env2;
 		setTransformation(env1, env2);
 	}
 	

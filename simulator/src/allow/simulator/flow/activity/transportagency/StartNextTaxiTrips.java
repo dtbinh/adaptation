@@ -8,9 +8,9 @@ import allow.simulator.flow.activity.Activity;
 import allow.simulator.flow.activity.taxi.PrepareTaxiTrip;
 import allow.simulator.mobility.data.TaxiTrip;
 
-public class ScheduleNextTaxiTrips extends Activity {
+public class StartNextTaxiTrips extends Activity {
 	
-	public ScheduleNextTaxiTrips(TaxiAgency agency) {
+	public StartNextTaxiTrips(TaxiAgency agency) {
 		super(Activity.Type.SCHEDULE_NEXT_TAXI_TRIPS, agency);
 	}
 

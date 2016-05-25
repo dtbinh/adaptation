@@ -18,7 +18,7 @@ public interface IPlannerService {
 	 * @param request Request containing the parameters of the journey. 
 	 * @return List of possible itineraries.
 	 */
-	public List<Itinerary> requestSingleJourney(JourneyRequest request);
+	//public List<Itinerary> requestSingleJourney(JourneyRequest request);
 	
 	/**
 	 * Requests a single journey from the planner specifying the parameters in
@@ -32,6 +32,6 @@ public interface IPlannerService {
 	 * @return Reference to itineraries parameter if planning was successful,
 	 * null otherwise.
 	 */
-	public List<Itinerary> requestSingleJourney(JourneyRequest request, List<Itinerary> itineraries);
+	public boolean requestSingleJourney(JourneyRequest request, List<Itinerary> itineraries);
 	
 }

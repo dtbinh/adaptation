@@ -327,32 +327,12 @@ public final class Person extends Entity {
 	}
 	
 	/**
-	 * Determine whether this person should have a car for travelling.
-	 * 
-	 * @param hasCar True, if person should have a car for travelling, false
-	 * otherwise.
-	 */
-	public void setCar(boolean hasCar) {
-		this.hasCar = hasCar;
-	}
-
-	/**
 	 * Returns true, if this person has a bike for travelling, false otherwise.
 	 * 
 	 * @return True, if person has a bike for travelling, false otherwise.
 	 */
 	public boolean hasBike() {
 		return hasBike;
-	}
-	
-	/**
-	 * Determine whether this person should have a bike for travelling.
-	 * 
-	 * @param hasBike True, if person should have a bike for travelling, false
-	 * otherwise.
-	 */
-	public void setBike(boolean hasBike) {
-		this.hasBike = hasBike;
 	}
 	
 	/**

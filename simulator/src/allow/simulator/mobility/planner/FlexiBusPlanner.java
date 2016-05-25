@@ -10,14 +10,14 @@ import allow.simulator.util.Coordinate;
 public class FlexiBusPlanner implements IPlannerService {
 
 	
-	@Override
-	public List<Itinerary> requestSingleJourney(JourneyRequest request) {
-		return null;
-	}
+//	@Override
+//	public List<Itinerary> requestSingleJourney(JourneyRequest request) {
+//		return null;
+//	}
 	
 	@Override
-	public List<Itinerary> requestSingleJourney(JourneyRequest request, List<Itinerary> itineraries) {
-		return null;
+	public boolean requestSingleJourney(JourneyRequest request, List<Itinerary> itineraries) {
+		return false;
 	}
 	
 	/**

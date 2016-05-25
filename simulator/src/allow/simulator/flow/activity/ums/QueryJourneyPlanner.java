@@ -6,6 +6,7 @@ import java.util.Queue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 
+import allow.simulator.core.Context;
 import allow.simulator.entity.Entity;
 import allow.simulator.entity.UrbanMobilitySystem;
 import allow.simulator.flow.activity.Activity;
@@ -38,12 +39,14 @@ public class QueryJourneyPlanner extends Activity {
 		UrbanMobilitySystem planner = (UrbanMobilitySystem) entity;
 		Queue<Pair<List<JourneyRequest>, RequestBuffer>> requests = planner.getRequestQueue();
 		CountDownLatch latch = new CountDownLatch(requests.size());
+		Context context = planner.getContext();
 
 		int i = 0;
 		while(requests.size() > 0) {
 			Pair<List<JourneyRequest>, RequestBuffer> request = requests.poll();
 			Worker w = workerPool.pop();
-			w.prepare(request.first, request.second, planner.getContext().getPlannerServices().get(i), planner.getContext().getFlexiBusPlannerService(), latch);
+			w.prepare(request.first, request.second, context.getPlannerServices().get(i), context.getFlexiBusPlannerService(),
+					context.getBikeRentalPlannerService(), context.getTaxiPlannerService(), latch);
 			tasks.add(w);
 			i = (i + 1) % planner.getContext().getPlannerServices().size();
 		}

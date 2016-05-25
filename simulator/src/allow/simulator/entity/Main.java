@@ -155,7 +155,7 @@ public class Main {
 	};
 		
 	private static boolean validateParameters(IPlannerService planner, TravelEvent event, boolean hasCar, boolean hasBike, StreetMap map) {
-		List<Itinerary> it = new ArrayList<Itinerary>();
+		//List<Itinerary> it = new ArrayList<Itinerary>();
 		LocalDate date = LocalDate.of(2014, 8, 25);
 		RequestId reqId = new RequestId();
 		
@@ -163,22 +163,23 @@ public class Main {
 		JourneyRequest s = JourneyRequest.createRequest(event.getStartingPoint(), event.getDestination(), LocalDateTime.of(date, event.getTime()),
 				event.arriveBy(), transitJourney, null, reqId);
 		s.MaximumWalkDistance = 500;
-		List<Itinerary> temp = planner.requestSingleJourney(s);
-		if (temp != null) it.addAll(temp);
+		List<Itinerary> temp = new ArrayList<Itinerary>();
+		planner.requestSingleJourney(s, temp);
+		// if (temp != null) it.addAll(temp);
 
 		// Add walking journeys
 		s.TransportTypes = walkingJourney;
 		s.MaximumWalkDistance = 1500;
-		temp = planner.requestSingleJourney(s);
-		if (temp != null) it.addAll(temp);
+		planner.requestSingleJourney(s, temp);
+		// if (temp != null) it.addAll(temp);
 		int nMeans = 2;
 
 		// Add car journeys if person has car.
 		if (hasCar) {
 			s.TransportTypes = carJourney;
 			s.MaximumWalkDistance = 500;
-			temp = planner.requestSingleJourney(s);
-			if (temp != null) it.addAll(temp);
+			planner.requestSingleJourney(s, temp);
+			// if (temp != null) it.addAll(temp);
 			nMeans++;
 		}
 		
@@ -186,12 +187,12 @@ public class Main {
 		if (hasBike) {
 			s.TransportTypes = bikeJourney;
 			s.MaximumWalkDistance = 500;
-			temp = planner.requestSingleJourney(s);
-			if (temp != null) it.addAll(temp);
+			planner.requestSingleJourney(s, temp);
+			// if (temp != null) it.addAll(temp);
 			nMeans++;
 		}
 		//System.out.println(nMeans + " " + it.size());
-		return it.size() >= nMeans;
+		return temp.size() >= nMeans;
 		/*if (it.size() == 0) {
 			return false;
 		} else if (hasCar && hasBike) {

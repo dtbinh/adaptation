@@ -207,15 +207,6 @@ public class Simulator {
 		for (String line : lines) {
 			Person p = mapper.readValue(line, Person.class);
 			p.setContext(context);
-			
-			/*if (knowledgeModel.equals("local") || knowledgeModel.equals("global (temporally restricted)")) {
-				p.setUtility(new UtilityWithoutPreferences());
-				
-			} else if (knowledgeModel.equals("without")) {
-
-			} else {
-				throw new IllegalArgumentException("Error: Unknown knowledge model");
-			}*/
 			PlanGenerator.generateDayPlan(p);
 			context.getWorld().addEntity(p);
 			ids = Math.max(ids, p.getId() + 1);
@@ -264,7 +255,7 @@ public class Simulator {
 			case TAXIAGENCY:
 				newEntity = new TaxiAgency(ids++, new Utility(), new Preferences(), context);
 				break;
-				
+			
 			case URBANMOBILITYSYSTEM:
 				newEntity = new UrbanMobilitySystem(ids++, new Utility(), new Preferences(), context);
 				break;

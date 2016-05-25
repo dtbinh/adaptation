@@ -8,6 +8,7 @@ import java.util.List;
 
 import allow.simulator.entity.Person;
 import allow.simulator.entity.PublicTransportationAgency;
+import allow.simulator.entity.TaxiAgency;
 import allow.simulator.flow.activity.Activity;
 import allow.simulator.flow.activity.Learn;
 import allow.simulator.mobility.data.PublicTransportationStop;
@@ -79,14 +80,6 @@ public final class PrepareJourney extends Activity {
 				entity.getFlow().addActivity(cycle);
 				break;
 				
-			case FLEXIBUS:
-				person.getContext().getWorld().getUrbanMobilitySystem().getTransportationRepository().getFlexiBusAgency();
-				
-				/*
-				 * Add code 
-				 */
-				break;
-				
 			case BUS:
 			case RAIL:
 			case CABLE_CAR:
@@ -124,6 +117,12 @@ public final class PrepareJourney extends Activity {
 				
 				Activity walk = new Walk(person, l.streets);
 				entity.getFlow().addActivity(walk);
+				break;
+			
+			case TAXI:
+				TaxiAgency ta2 = person.getContext().getWorld().getUrbanMobilitySystem()
+				.getTransportationRepository().getTaxiAgency();
+				
 				break;
 				
 			default:

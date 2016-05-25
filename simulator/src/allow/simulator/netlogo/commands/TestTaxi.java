@@ -1,5 +1,6 @@
 package allow.simulator.netlogo.commands;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.nlogo.agent.Agent;
@@ -13,6 +14,7 @@ import allow.simulator.entity.Person;
 import allow.simulator.entity.TravelEvent;
 import allow.simulator.mobility.data.TType;
 import allow.simulator.mobility.planner.IPlannerService;
+import allow.simulator.mobility.planner.Itinerary;
 import allow.simulator.mobility.planner.JourneyRequest;
 import allow.simulator.mobility.planner.RequestId;
 import allow.simulator.netlogo.agent.PersonAgent;
@@ -30,7 +32,8 @@ public class TestTaxi extends DefaultCommand {
 			List<TravelEvent> t = person.getDailyRoutine().getDailyRoutine(1);
 			JourneyRequest req = JourneyRequest.createRequest(t.get(0).getStartingPoint(), t.get(0).getDestination(), person.getContext().getTime().getCurrentDateTime(),
 					false, new TType[] { TType.SHARED_BICYCLE }, person, new RequestId());
-			taxiPlanner.requestSingleJourney(req);
+			List<Itinerary> temp = new ArrayList<Itinerary>();
+			taxiPlanner.requestSingleJourney(req, temp);
 			
 		} else {
 			throw new ExtensionException("Error: Calling agent must be of breed Person");

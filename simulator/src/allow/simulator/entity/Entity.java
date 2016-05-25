@@ -1,11 +1,8 @@
 package allow.simulator.entity;
 
 import java.util.Observable;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import allow.simulator.core.Context;
-import allow.simulator.ensemble.IMessage;
 import allow.simulator.entity.knowledge.EvoKnowledge;
 import allow.simulator.entity.relation.RelationGraph;
 import allow.simulator.entity.utility.IUtility;
@@ -63,11 +60,6 @@ public abstract class Entity extends Observable {
 		TAXIAGENCY,
 		
 		/**
-		 * Agency for renting a bike.
-		 */
-		BIKE_RENTAL_AGENCY,
-		
-		/**
 		 * FlexiBus agency providing dynamic on-request bus scheduling.
 		 */
 		FLEXIBUSAGENCY,
@@ -111,9 +103,6 @@ public abstract class Entity extends Observable {
 	@JsonIgnore
 	protected Coordinate position;
 	
-	@JsonIgnore
-	protected Queue<IMessage> messageQueue;
-	
 	/**
 	 * Constructor.
 	 * Creates a new entity with in a given simulation context. Knowledge and
@@ -135,7 +124,6 @@ public abstract class Entity extends Observable {
 		flow = new Flow();
 		this.utility = utility;
 		this.preferences = prefs;
-		messageQueue = new ConcurrentLinkedQueue<IMessage>();
 		setPosition(position);
 	}
 
@@ -160,7 +148,6 @@ public abstract class Entity extends Observable {
 		flow = new Flow();
 		this.utility = utility;
 		this.preferences = prefs;
-		messageQueue = new ConcurrentLinkedQueue<IMessage>();
 		setPosition(position);
 	}
 	
@@ -288,16 +275,6 @@ public abstract class Entity extends Observable {
 	@JsonIgnore
 	public RelationGraph getRelations() {
 		return relations;
-	}
-	
-	/**
-	 * Returns the message queue of this entity for ensemble communication.
-	 * 
-	 * @return Message queue of this entity.
-	 */
-	@JsonIgnore
-	public Queue<IMessage> getMessageQueue() {
-		return messageQueue;
 	}
 	
 	/**

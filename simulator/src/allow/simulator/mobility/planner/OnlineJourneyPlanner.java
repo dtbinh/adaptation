@@ -32,7 +32,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  * @author Andreas Poxrucker (DFKI)
  *
  */
-public class OnlineJourneyPlanner extends OTPJourneyPlanner {
+public final class OnlineJourneyPlanner extends OTPJourneyPlanner {
 	// URI to send requests to.
 	private static URI routingURI;
 
@@ -65,13 +65,13 @@ public class OnlineJourneyPlanner extends OTPJourneyPlanner {
 		client = new DefaultHttpClient();
 	}
 
-	@Override
-	public synchronized List<Itinerary> requestSingleJourney(JourneyRequest request) {
-		return requestSingleJourney(request, new ArrayList<Itinerary>());
-	}
+//	@Override
+//	public synchronized List<Itinerary> requestSingleJourney(JourneyRequest request) {
+//		return requestSingleJourney(request, new ArrayList<Itinerary>());
+//	}
 
 	@Override
-	public synchronized List<Itinerary> requestSingleJourney(JourneyRequest request, List<Itinerary> itineraries) {
+	public synchronized boolean requestSingleJourney(JourneyRequest request, List<Itinerary> itineraries) {
 		// Build query string.
 		StringBuilder paramBuilder = new StringBuilder();
 		paramBuilder.append(routingURI.toString());
@@ -94,13 +94,11 @@ public class OnlineJourneyPlanner extends OTPJourneyPlanner {
 		for (int i = 0; i < request.TransportTypes.length - 1; i++) {
 			paramBuilder.append(request.TransportTypes[i].toString() + ",");
 		}
-		paramBuilder
-				.append(request.TransportTypes[request.TransportTypes.length - 1]);
+		paramBuilder.append(request.TransportTypes[request.TransportTypes.length - 1]);
 		paramBuilder.append("&numItineraries=" + request.ResultsNumber);
 		paramBuilder.append("&walkSpeed=" + 1.29);
 		paramBuilder.append("&bikeSpeed=" + 4.68);
 		paramBuilder.append("&showIntermediateStops=true");
-
 		// paramBuilder.append("&maxWalkDistance=" +
 		// journey.MaximumWalkDistance);
 
@@ -123,7 +121,7 @@ public class OnlineJourneyPlanner extends OTPJourneyPlanner {
 			JsonNode error = root.get("error");
 
 			if (error != null)
-				return null;
+				return false;
 
 			// Parse response.
 			JsonNode travelPlan = root.get("plan");
@@ -146,29 +144,17 @@ public class OnlineJourneyPlanner extends OTPJourneyPlanner {
 					for (Leg l : nextIt.legs) {
 						l.streets = new ArrayList<Street>();
 
-						if (l.mode == TType.CAR || l.mode == TType.BICYCLE
-								|| l.mode == TType.WALK) {
+						if (l.mode == TType.CAR || l.mode == TType.BICYCLE || l.mode == TType.WALK) {
 
 							for (int j = 0; j < l.osmNodes.size() - 1; j++) {
 								String first = normalize(l.osmNodes.get(j), map);
-								String second = normalize(
-										l.osmNodes.get(j + 1), map);
-
+								String second = normalize(l.osmNodes.get(j + 1), map);
 								Street street = map.getStreet(first, second);
 
 								if (street != null) {
 									l.streets.add(street);
-									//l.segments.addAll(street.getSubSegments());
 									continue;
-								}
-
-								/*StreetSegment seg = map.getStreetSegment(first,
-										second);
-
-								if (seg != null) {
-									l.segments.add(seg);
-									continue;
-								}*/
+								} 
 							}
 
 						} else {
@@ -190,14 +176,6 @@ public class OnlineJourneyPlanner extends OTPJourneyPlanner {
 								if (segs != null)
 									l.streets.addAll(segs);
 							}
-							/*for (int j = 0; j < l.stops.size() - 1; j++) {
-								String first = l.stops.get(j);
-								String second = l.stops.get(j + 1);
-								List<Street> segs = dataService.getBusstopRoutingStreet(first, second);
-
-								if (segs != null)
-									l.streets.addAll(segs);
-							}*/
 						}
 					}
 					nextIt.initialWaitingTime = Math.max((nextIt.startTime - request.entity.getContext().getTime().getTimestamp()) / 1000, 0);
@@ -212,7 +190,7 @@ public class OnlineJourneyPlanner extends OTPJourneyPlanner {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return itineraries;
+		return true;
 	}
 	
 	private static String normalize(String nodeLabel, StreetMap map) {

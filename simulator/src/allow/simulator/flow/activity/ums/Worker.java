@@ -6,7 +6,6 @@ import java.util.concurrent.CountDownLatch;
 
 import allow.simulator.mobility.data.TType;
 import allow.simulator.mobility.planner.IPlannerService;
-import allow.simulator.mobility.planner.Itinerary;
 import allow.simulator.mobility.planner.JourneyRequest;
 import allow.simulator.mobility.planner.RequestBuffer;
 
@@ -15,31 +14,35 @@ public class Worker implements Callable<RequestBuffer> {
 	private static final int MAX_NUMBER_OF_ATTEMPTS = 2;
 
 	// Requests to send to the planner.
-	public List<JourneyRequest> requests;
+	private List<JourneyRequest> requests;
 	
 	// Buffer to add planner responses to.
-	public RequestBuffer responseBuffer;
+	private RequestBuffer responseBuffer;
 	
 	// Planner to use.
-	public IPlannerService regularPlanner;
-	public IPlannerService flexiBusPlanner;
+	private IPlannerService regularPlanner;
+	private IPlannerService flexiBusPlanner;
+	private IPlannerService bikeRentalPlanner;
+	private IPlannerService taxiPlannerService;
 	
 	// Latch to count down for thread synchronization.
-	public CountDownLatch latch;
+	private CountDownLatch latch;
 
 	public void prepare(List<JourneyRequest> requests, RequestBuffer responseBuffer,
-			IPlannerService regularPlanner, IPlannerService flexiBusPlanner, CountDownLatch latch) {
+			IPlannerService regularPlanner, IPlannerService flexiBusPlanner,
+			IPlannerService taxiPlanner, IPlannerService bikeRentalPlanner,
+			CountDownLatch latch) {
 		this.requests = requests;
 		this.responseBuffer = responseBuffer;
 		this.regularPlanner = regularPlanner;
 		this.flexiBusPlanner = flexiBusPlanner;
+		this.taxiPlannerService = taxiPlanner;
+		this.bikeRentalPlanner = bikeRentalPlanner;
 		this.latch = latch;
 	}
 	
 	public void reset() {
 		requests = null;
-		responseBuffer = null;
-		regularPlanner = null;
 		latch = null;
 	}
 	
@@ -52,15 +55,21 @@ public class Worker implements Callable<RequestBuffer> {
 			
 			if (req.TransportTypes[0] == TType.FLEXIBUS) {
 				flexiBusPlanner.requestSingleJourney(req, responseBuffer.buffer);
+			
+			} else if (req.TransportTypes[0] == TType.SHARED_BICYCLE) {
+				bikeRentalPlanner.requestSingleJourney(req, responseBuffer.buffer);
+				
+			} else if ((req.TransportTypes[0] == TType.TAXI) || (req.TransportTypes[0] == TType.SHARED_TAXI)) {
+				taxiPlannerService.requestSingleJourney(req, responseBuffer.buffer);
 				
 			} else {
 				int i = 0;
 
 				while (i < MAX_NUMBER_OF_ATTEMPTS) {
 					try {
-						List<Itinerary> itineraries = regularPlanner.requestSingleJourney(req, responseBuffer.buffer);
+						boolean success = regularPlanner.requestSingleJourney(req, responseBuffer.buffer);
 
-						if (itineraries != null) {
+						if (success) {
 							break;
 						}
 						i++;

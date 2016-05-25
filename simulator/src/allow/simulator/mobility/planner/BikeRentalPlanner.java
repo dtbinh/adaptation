@@ -21,41 +21,41 @@ public class BikeRentalPlanner implements IPlannerService {
 		this.bikeRentalStation = bikeRentalStation;
 		this.time = time;
 	}
-	@Override
-	public List<Itinerary> requestSingleJourney(JourneyRequest request) {
-		return requestSingleJourney(request, new ArrayList<Itinerary>());
-	}
+	
+//	@Override
+//	public List<Itinerary> requestSingleJourney(JourneyRequest request) {
+//		return requestSingleJourney(request, new ArrayList<Itinerary>());
+//	}
 
 	@Override
-	public List<Itinerary> requestSingleJourney(JourneyRequest request, List<Itinerary> itineraries) {
+	public boolean requestSingleJourney(JourneyRequest request, List<Itinerary> itineraries) {
 		// Get planner instance
 		int randomPlannerId = ThreadLocalRandom.current().nextInt(plannerServices.size());
 		IPlannerService planner = plannerServices.get(randomPlannerId);		
 		TType modes[] = request.TransportTypes;
+		boolean success = false;
 		
 		for (int i = 0; i < modes.length; i++) {
 			Itinerary newIt = null;
 			
 			if (modes[i] == TType.SHARED_BICYCLE)
 				newIt = createBikeRentalItinerary(request, planner);
-	
-			if (newIt != null)
+						
+			if (newIt != null) {
+				success = true;
 				itineraries.add(newIt);
+			}
 		}
-		return itineraries;
+		return success;
 	}
 
-	private Itinerary createBikeRentalItinerary(JourneyRequest req, IPlannerService planner) {
-		List<Leg> itLegs = new ArrayList<Leg>();
-		
+	private Itinerary createBikeRentalItinerary(JourneyRequest req, IPlannerService planner) {		
 		// Request walking leg from starting point to bike rental station
 		Leg walkingLeg = createWalkingLeg(req.From, bikeRentalStation, planner, req.entity);
 		
 		if (walkingLeg == null)
 			return null;
-		
-		itLegs.add(walkingLeg);
-		
+				
 		// Request cycling leg from bike rental station to destination
 		Itinerary bikeIt = createBikeItinerary(bikeRentalStation, req.To,planner, req.entity, walkingLeg.endTime);
 	
@@ -83,7 +83,8 @@ public class BikeRentalPlanner implements IPlannerService {
 	private Leg createWalkingLeg(Coordinate from, Coordinate to, IPlannerService planner, Entity requestor) {
 		RequestId reqId = new RequestId();
 		JourneyRequest req = JourneyRequest.createRequest(from, to, time.getCurrentDateTime(), false, new TType[] { TType.WALK }, (Person) requestor, reqId);
-		List<Itinerary> temp = planner.requestSingleJourney(req);
+		List<Itinerary> temp = new ArrayList<Itinerary>();
+		planner.requestSingleJourney(req, temp);
 		Itinerary candidateIt = null;
 		
 		for (Itinerary it : temp) {
@@ -102,7 +103,8 @@ public class BikeRentalPlanner implements IPlannerService {
 	private Itinerary createBikeItinerary(Coordinate from, Coordinate to, IPlannerService planner, Entity requestor, long startTime) {
 		RequestId reqId = new RequestId();
 		JourneyRequest req = JourneyRequest.createRequest(from, to, time.getCurrentDateTime(), false, new TType[] { TType.BICYCLE }, (Person) requestor, reqId);
-		List<Itinerary> temp = planner.requestSingleJourney(req);
+		List<Itinerary> temp = new ArrayList<Itinerary>();
+		planner.requestSingleJourney(req, temp);
 		Itinerary candidateIt = null;
 		
 		for (Itinerary it : temp) {

@@ -17,6 +17,7 @@ import allow.simulator.entity.Person;
 import allow.simulator.entity.TravelEvent;
 import allow.simulator.mobility.data.TType;
 import allow.simulator.mobility.planner.IPlannerService;
+import allow.simulator.mobility.planner.Itinerary;
 import allow.simulator.mobility.planner.JourneyRequest;
 import allow.simulator.mobility.planner.RequestId;
 import allow.simulator.netlogo.agent.PersonAgent;
@@ -51,7 +52,8 @@ public class TestSharedTaxi extends DefaultCommand {
 			JourneyRequest req = JourneyRequest.createRequest(t.get(0).getStartingPoint(), to, person.getContext().getTime().getCurrentDateTime(),
 					false, new TType[] { TType.SHARED_TAXI }, person, new RequestId());
 			long t1 = System.currentTimeMillis();
-			taxiPlanner.requestSingleJourney(req);
+			List<Itinerary> temp = new ArrayList<Itinerary>();
+			taxiPlanner.requestSingleJourney(req, temp);
 			long t2 = System.currentTimeMillis();
 			System.out.println("Took " + (double) ((t2 - t1) / 1000.0) + " s");
 			

@@ -40,33 +40,35 @@ public final class TaxiPlanner implements IPlannerService {
 		return tripBuffer.remove(tripId);
 	}
 	
-	@Override
-	public List<Itinerary> requestSingleJourney(JourneyRequest request) {
-		return requestSingleJourney(request, new ArrayList<Itinerary>());
-	}
+//	@Override
+//	public List<Itinerary> requestSingleJourney(JourneyRequest request) {
+//		return requestSingleJourney(request, new ArrayList<Itinerary>());
+//	}
 
 	@Override
-	public List<Itinerary> requestSingleJourney(JourneyRequest request, List<Itinerary> itineraries) {
+	public boolean requestSingleJourney(JourneyRequest request, List<Itinerary> itineraries) {
 		// Get planner instance
 		int randomPlannerId = ThreadLocalRandom.current().nextInt(plannerServices.size());
-		IPlannerService planner = plannerServices.get(randomPlannerId);
-				
+		IPlannerService planner = plannerServices.get(randomPlannerId);			
 		TType modes[] = request.TransportTypes;
+		boolean success = false;
 		
 		for (int i = 0; i < modes.length; i++) {
 			Itinerary newIt = null;
 			
 			if (modes[i] == TType.TAXI) {
 				newIt = createTaxiItinerary(request, planner);
-		
+	
 			} else if (modes[i] == TType.SHARED_TAXI) {
 				newIt = createSharedTaxiItinerary(request, planner);
 			}
 
-			if (newIt != null)
+			if (newIt != null) {
+				success = true;
 				itineraries.add(newIt);
+			}
 		}
-		return itineraries;
+		return success;
 	}
 	
 	private Itinerary createTaxiItinerary(JourneyRequest req, IPlannerService planner) {
@@ -76,7 +78,7 @@ public final class TaxiPlanner implements IPlannerService {
 		locations.add(req.From);
 		locations.add(req.To);
 		locations.add(taxiRank);
-		List<Leg> legs = createTripLegs(locations, planner, req.entity);
+		List<Leg> legs = createTripLegs(locations, planner, req);
 		
 		if (legs == null)
 			return null;
@@ -147,14 +149,14 @@ public final class TaxiPlanner implements IPlannerService {
 		return ret;
 	}
 	
-	private List<Leg> createTripLegs(List<Coordinate> locations, IPlannerService planner, Entity requestor) {
+	private List<Leg> createTripLegs(List<Coordinate> locations, IPlannerService planner, JourneyRequest req) {
 		if (locations.size() == 0)
 			return null;
 		
 		List<Leg> ret = new ArrayList<Leg>(locations.size() - 1);
 		
 		for (int i = 0; i < locations.size() - 1; i++) {
-			Leg l = createLeg(locations.get(i), locations.get(i + 1), planner, requestor);
+			Leg l = createLeg(locations.get(i), locations.get(i + 1), planner, req.entity);
 			
 			if (l == null) 
 				return null;
@@ -185,7 +187,8 @@ public final class TaxiPlanner implements IPlannerService {
 	private Leg createLeg(Coordinate from, Coordinate to, IPlannerService planner, Entity requestor) {
 		RequestId reqId = new RequestId();
 		JourneyRequest req = JourneyRequest.createRequest(from, to, time.getCurrentDateTime(), false, new TType[] { TType.CAR }, (Person) requestor, reqId);
-		List<Itinerary> temp = planner.requestSingleJourney(req);
+		List<Itinerary> temp = new ArrayList<Itinerary>();
+		planner.requestSingleJourney(req, temp);
 		Itinerary candidateIt = null;
 		
 		for (Itinerary it : temp) {
